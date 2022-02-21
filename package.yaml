@@ -1,0 +1,25 @@
+name: linux-capabilities
+version: 0.0.1.0
+synopsis: Low-level interface to capabilities(7)
+description: See README at <https://git.sr.ht/~kaction/linux-capabilities>
+author: Dmitry Bogatov
+git: https://git.sr.ht/~kaction/linux-capabilities
+category: System.Linux
+license: AGPL-3.0-or-later
+
+dependencies:
+  - base >=4.11 && < 5
+
+library:
+  source-dirs: src
+
+tests:
+  linux-capabilities-test:
+    source-dirs: test
+    main: Main.hs
+    ghc-options:
+      - -Wall
+      - -threaded
+    dependencies:
+      - linux-capabilities
+      - hedgehog
