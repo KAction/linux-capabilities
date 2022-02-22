@@ -43,7 +43,7 @@ instance Show Set where
     in "CapabilitySet {" ++ intercalate ", " names ++ "}"
 
 splitWord64 :: Word64 -> (Word32, Word32)
-splitWord64 w = (fromIntegral (w `shiftR` 32), fromIntegral w)
+splitWord64 w = (fromIntegral w, fromIntegral (w `shiftR` 32))
 
 
 pattern VFS_CAP_REVISION_2 :: Word32
