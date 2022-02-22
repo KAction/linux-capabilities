@@ -19,7 +19,54 @@ function to 'encode' it into bytestring to be written into extended attribute.
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternSynonyms #-}
-module System.Capability (Set, known, File, encode, permitted, inheritable) where
+module System.Capability ( Set
+                         , known
+                         , File
+                         , encode
+                         , permitted
+                         , inheritable
+                         , pattern CAP_CHOWN
+                         , pattern CAP_DAC_OVERRIDE
+                         , pattern CAP_DAC_READ_SEARCH
+                         , pattern CAP_FOWNER
+                         , pattern CAP_FSETID
+                         , pattern CAP_KILL
+                         , pattern CAP_SETGID
+                         , pattern CAP_SETUID
+                         , pattern CAP_SETPCAP
+                         , pattern CAP_LINUX_IMMUTABLE
+                         , pattern CAP_NET_BIND_SERVICE
+                         , pattern CAP_NET_BROADCAST
+                         , pattern CAP_NET_ADMIN
+                         , pattern CAP_NET_RAW
+                         , pattern CAP_IPC_LOCK
+                         , pattern CAP_IPC_OWNER
+                         , pattern CAP_SYS_MODULE
+                         , pattern CAP_SYS_RAWIO
+                         , pattern CAP_SYS_CHROOT
+                         , pattern CAP_SYS_PTRACE
+                         , pattern CAP_SYS_PACCT
+                         , pattern CAP_SYS_ADMIN
+                         , pattern CAP_SYS_BOOT
+                         , pattern CAP_SYS_NICE
+                         , pattern CAP_SYS_RESOURCE
+                         , pattern CAP_SYS_TIME
+                         , pattern CAP_SYS_TTY_CONFIG
+                         , pattern CAP_MKNOD
+                         , pattern CAP_LEASE
+                         , pattern CAP_AUDIT_WRITE
+                         , pattern CAP_AUDIT_CONTROL
+                         , pattern CAP_SETFCAP
+                         , pattern CAP_MAC_OVERRIDE
+                         , pattern CAP_MAC_ADMIN
+                         , pattern CAP_SYSLOG
+                         , pattern CAP_WAKE_ALARM
+                         , pattern CAP_BLOCK_SUSPEND
+                         , pattern CAP_AUDIT_READ
+                         , pattern CAP_PERFMON
+                         , pattern CAP_BPF
+                         , pattern CAP_CHECKPOINT_RESTORE
+                         ) where
 import Data.Word (Word32, Word64)
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy (toStrict)
