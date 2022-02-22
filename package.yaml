@@ -15,6 +15,18 @@ dependencies:
 library:
   source-dirs: src
 
+executables:
+  hs-setcap:
+    main: Main.hs
+    dependencies:
+      - base
+      - split
+      - text
+      - bytestring
+      - xattr
+      - lens
+      - linux-capabilities
+
 tests:
   linux-capabilities-test:
     source-dirs: test
