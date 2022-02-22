@@ -1,7 +1,18 @@
 name: linux-capabilities
 version: 1.1.0.0
 synopsis: Low-level interface to capabilities(7)
-description: See README at <https://git.sr.ht/~kaction/linux-capabilities>
+description: |
+  Linux capabilities are more fine-grained implementation of idea of suid-root
+  binaries, granting executable only subset of powers normally associated with
+  root. They are set by writing into "security.capability" extended attribute
+  binary string of specific format.
+
+  This library provides idiomatic interface for capability set, as well
+  as function to convert it into bytestring to be written into extended
+  attribute.
+
+  Check bare-bones re-implementation of "setcap" utility as example:
+  <https://git.sr.ht/~kaction/linux-capabilities/tree/master/item/Main.hs>
 author: Dmitry Bogatov
 git: https://git.sr.ht/~kaction/linux-capabilities
 category: System.Linux

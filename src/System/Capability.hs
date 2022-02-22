@@ -1,3 +1,21 @@
+{-|
+Module      : System.Capability
+Description : Low-level interface to linux file capability attributes
+Copyright   : (c) Dmitry Bogatov, 2022
+License     : AGPL-3.0-or-later
+Maintainer  : haskell/linux-capabilities@kaction.cc
+Stability   : experimental
+Portability : Linux
+
+Linux capabilities are more fine-grained implementation of idea of suid-root
+binaries, granting executable only subset of powers normally associated with
+root. They are set by writing into "security.capability" extended attribute
+binary string of specific format.
+
+This library provides idiomatic interface for capability 'Set', as well as
+function to 'encode' it into bytestring to be written into extended attribute.
+-}
+
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternSynonyms #-}
@@ -15,13 +33,20 @@ import Data.Monoid (Monoid(..))
 -- described in capabilities(7). New sets should constructed using
 -- monoid instance and exported CAP_* constants.
 newtype Set = Set Word64 deriving (Eq)
+
+-- | Every file has two sets of capabilities associated with it -- set of 'permitted'
+-- (coinciding with effective set) capabilities and set of 'inheritable' capabilities.
+-- More information is available in capabilities(7) manual page.
+--
+-- Abstract type of 'File' is isomorphic to pair of these two sets, witnessed but two
+-- lenses.
 newtype File = File (Set, Set) deriving (Eq, Semigroup, Monoid)
 
--- Lens' File Set
+-- | Lens to access permitted capability set inside 'File'.
 permitted :: Functor f => (Set -> f Set) -> File -> f File
 permitted k (File (p, i)) = fmap (\p' -> File (p', i)) (k p)
 
--- Lens' File Set
+-- | Lens to access inheritable capability set inside 'File'.
 inheritable :: Functor f => (Set -> f Set) -> File -> f File
 inheritable k (File (p, i)) = fmap (\i' -> File (p, i')) (k i)
 
@@ -42,16 +67,20 @@ instance Show Set where
     let names = map (unpack.fst) $ filter (\(_, Set y) -> (x .&. y) == y) known
     in "CapabilitySet {" ++ intercalate ", " names ++ "}"
 
+-- | Split 64 bit word into pair of low 32 bit word and high 32 bit word.
 splitWord64 :: Word64 -> (Word32, Word32)
 splitWord64 w = (fromIntegral w, fromIntegral (w `shiftR` 32))
 
-
+{- These are magic constants copied from capability.h -}
 pattern VFS_CAP_REVISION_2 :: Word32
 pattern VFS_CAP_REVISION_2 = 0x02000000
 
 pattern VFS_CAP_FLAGS_EFFECTIVE :: Word32
 pattern VFS_CAP_FLAGS_EFFECTIVE = 0x000001
 
+-- | Convert pair of permitted and inheritable capability sets into binary
+-- string of length 20 suitable for writing into "security.capability"
+-- extended attribute of an executable file.
 encode :: File -> ByteString
 encode (File (Set p, Set i)) =
   let magic = if p == 0
@@ -193,6 +222,10 @@ pattern CAP_CHECKPOINT_RESTORE = Set 1099511627776
 --
 -- I can't fix the fact that "show" is String-based, but at least I can avoid
 -- exacerbating the problem.
+
+-- | Mapping from capability name (e.g "CAP_CHOWN") into value of type 'Set'
+-- that contains that and only that capability, and can be combined using
+-- 'Monoid' instance.
 known :: [(Text, Set)]
 known = [ ("CAP_CHOWN", CAP_CHOWN)
         , ("CAP_DAC_OVERRIDE", CAP_DAC_OVERRIDE)
