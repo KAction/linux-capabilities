@@ -1,5 +1,5 @@
 name: linux-capabilities
-version: 0.0.1.0
+version: 1.1.0.0
 synopsis: Low-level interface to capabilities(7)
 description: See README at <https://git.sr.ht/~kaction/linux-capabilities>
 author: Dmitry Bogatov
